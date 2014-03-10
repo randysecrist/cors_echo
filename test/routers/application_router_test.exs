@@ -11,4 +11,9 @@ defmodule ApplicationRouterTest do
     conn = get("/")
     assert conn.status == 200
   end
+
+  test "supports options" do
+    conn = options("/")
+    assert conn.status == 200
+  end
 end

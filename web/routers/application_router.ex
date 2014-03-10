@@ -4,6 +4,7 @@ defmodule ApplicationRouter do
   filter Dynamo.Filters.Head
   filter JSON.Dynamo.Filter
   use HTTPoison.Base
+  require Lager
 
   prepare do
     conn = conn.resp_content_type("application/json")
@@ -37,6 +38,7 @@ defmodule ApplicationRouter do
 
   get "/remote/headers/:url" do
     url = URI.decode conn.params[:url]
+    Lager.debug "Remote URL: " <> url
     [ _, { _, last_modified }, _, _, _, { _, content_length } ] = (HTTPoison.head url).headers
     { content_length, _ } = Integer.parse(content_length)
     # convert RFC1123 to Unix Time (Sun, 23 Feb 2014 19:33:43 GMT)

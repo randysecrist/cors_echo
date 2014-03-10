@@ -6,7 +6,10 @@ defmodule CORSEcho do
   application and its Dynamos.
   """
   def start(_type, _args) do
-    HTTPoison.start
-    CORSEcho.Dynamo.start_link([max_restarts: 5, max_seconds: 5])
+    Lager.compile_log_level(:info)
+    Lager.compile_truncation_size(256)
+    # Start clean w/ mix server and release
+    # CORSEcho.Dynamo.run
+    CORSEcho.Supervisor.start_link([])
   end
 end

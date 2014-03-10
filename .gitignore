@@ -3,3 +3,6 @@
 /tmp
 erl_crash.dump
 *.ez
+cors_echo
+log
+nil
