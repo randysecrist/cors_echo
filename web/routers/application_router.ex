@@ -39,12 +39,21 @@ defmodule ApplicationRouter do
   get "/remote/headers/:url" do
     url = URI.decode conn.params[:url]
     Lager.debug "Remote URL: " <> url
-    [ _, { _, last_modified }, _, _, _, { _, content_length } ] = (HTTPoison.head url).headers
-    { content_length, _ } = Integer.parse(content_length)
-    # convert RFC1123 to Unix Time (Sun, 23 Feb 2014 19:33:43 GMT)
-    { _, erl_date } = String.to_char_list(last_modified)
+    headers = (HTTPoison.head url).headers
+    { content_length, _ } = Integer.parse(headers["Content-Length"])
+    unix_time = rfc1123_to_unix(headers["Last-Modified"])
+    conn.put_private :result_object, [
+      last_modified: unix_time,
+      length: content_length,
+      etag: String.strip(headers["ETag"], ?"),
+      title: headers["x-amz-meta-title"],
+      description: headers["x-amz-meta-description"] ]
+  end
+
+  # convert RFC1123 to Unix Time (Sun, 23 Feb 2014 19:33:43 GMT)
+  def rfc1123_to_unix(rfc1123_time) do
+    { _, erl_date } = String.to_char_list(rfc1123_time)
     timestamp = :httpd_util.convert_request_date(erl_date)
-    unix_time = :calendar.datetime_to_gregorian_seconds(timestamp)-719528*24*3600
-    conn.put_private :result_object, [ last_modified: unix_time, length: content_length ]
+    :calendar.datetime_to_gregorian_seconds(timestamp)-719528*24*3600
   end
 end
