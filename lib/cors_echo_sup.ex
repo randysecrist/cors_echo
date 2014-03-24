@@ -6,11 +6,9 @@ defmodule CORSEcho.Supervisor do
   end
 
   def init(app) do
-    HTTPoison.start
     children = [
-      # TODO:  define HTTPoison as a separate worker
-      #worker(HTTPoison, [app]),
-      supervisor(CORSEcho.Dynamo, [])
+      # worker(some_worker, [app]),
+      supervisor(CORSEcho.Dynamo, [app])
     ]
     supervise children, strategy: :one_for_one
   end

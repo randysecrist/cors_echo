@@ -19,7 +19,12 @@ defmodule CORSEcho.Mixfile do
     [ applications: [:cowboy, :dynamo,
                      :json, :httpoison, :exlager,
                      :stdlib, :inets ],
-      mod: { CORSEcho, [] } ]
+      mod: { CORSEcho, [] },
+      env: [
+        config_prop_1: true,
+        config_prop_2: false
+      ]
+    ]
   end
 
   defp deps do

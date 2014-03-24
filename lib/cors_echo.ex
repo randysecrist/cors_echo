@@ -6,10 +6,12 @@ defmodule CORSEcho do
   application and its Dynamos.
   """
   def start(_type, _args) do
-    Lager.compile_log_level(:info)
-    Lager.compile_truncation_size(256)
-    # Start clean w/ mix server and release
-    # CORSEcho.Dynamo.run
+    CORSEcho.Dynamo.run
     CORSEcho.Supervisor.start_link([])
   end
+
+  def stop(_state) do
+    Dynamo.Cowboy.shutdown CORSEcho.Dynamo
+  end
+
 end

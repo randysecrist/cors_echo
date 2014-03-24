@@ -39,13 +39,38 @@ defmodule ApplicationRouter do
   get "/remote/headers/:url" do
     url = URI.decode conn.params[:url]
     Lager.debug "Remote URL: " <> url
-    headers = (HTTPoison.head url).headers
-    { content_length, _ } = Integer.parse(headers["Content-Length"])
-    unix_time = rfc1123_to_unix(headers["Last-Modified"])
+
+    { status_code, headers } = try do
+      response = HTTPoison.head url
+      headers = response.headers
+      status_code = response.status_code
+      { status_code, headers }
+    rescue
+      [HTTPoison.HTTPError] -> { nil, [] }
+    end
+
+    {content_length, unix_time, etag} = case status_code do
+      200 ->
+        { content_length, _ } = Integer.parse(headers["Content-Length"])
+
+        unix_time = case headers["Last-Modified"] do
+          nil -> nil
+          _ -> rfc1123_to_unix(headers["Last-Modified"])
+        end
+
+        etag = case headers["ETag"] do
+          nil -> nil
+          _ -> String.strip(headers["ETag"], ?")
+        end
+        {content_length, unix_time, etag}
+      _ -> {nil, nil, nil}
+    end
+
     conn.put_private :result_object, [
+      status_code: status_code,
       last_modified: unix_time,
-      length: content_length,
-      etag: String.strip(headers["ETag"], ?"),
+      content_length: content_length,
+      etag: etag,
       title: headers["x-amz-meta-title"],
       description: headers["x-amz-meta-description"] ]
   end
