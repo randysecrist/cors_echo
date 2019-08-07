@@ -4,7 +4,7 @@ config :cors_echo,
   [
     network: [
       {:protocol, :http},
-      {:bind, {'0.0.0.0', 19090}},
+      {:bind, {'0.0.0.0', 18888}},
       {:acceptors, System.schedulers_online * 2},
     ]
   ]
