@@ -42,7 +42,6 @@ defmodule CORSEcho.Mixfile do
 
   defp deps do
     [
-      {:communication_tools, git: "git@gitlab.com:sofiinc/comm/communication-tools", app: false},
       {:cowboy, github: "ninenines/cowboy", tag: "2.6.3"},
       {:cowlib, github: "ninenines/cowlib", tag: "2.7.3", override: true},
       {:ranch, github: "ninenines/ranch", ref: "1.7.1", override: true},

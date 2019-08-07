@@ -15,10 +15,6 @@ config :logger,
   handle_otp_reports: true,
   handle_sasl_reports: false
 
-# if a process decides to have a uuid cache
-config :quickrand,
-  cache_size: 65536
-
 config :distillery,
   no_warn_missing: [
     :meck,
