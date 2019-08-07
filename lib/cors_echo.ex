@@ -41,7 +41,7 @@ defmodule CORSEcho do
     # build our routing table
     dispatch = :cowboy_router.compile([
       {:_, [
-        {"/ping", PingHandler, []},
+        {"/v1/ping", PingHandler, []},
         {:_, RootHandler, []}
       ]}
     ])
