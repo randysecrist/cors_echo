@@ -42,17 +42,17 @@ defmodule CORSEcho.Mixfile do
 
   defp deps do
     [
-      {:cowboy, github: "ninenines/cowboy", tag: "2.6.3"},
-      {:cowlib, github: "ninenines/cowlib", tag: "2.7.3", override: true},
-      {:ranch, github: "ninenines/ranch", ref: "1.7.1", override: true},
+      {:cowboy, "~> 2.6.3"},
+      {:ranch, "~> 1.7.1"},
+      {:cowlib, "~> 2.7.3", override: true},
       {:jason, "~> 1.1.2"},
-      {:observer_cli, "~> 1.4.2"},
-      {:distillery, "~> 2.0.12"},
-      {:meck, "~> 0.8.13", runtime: false, override: true},
-      {:gun, "~> 1.3.0", override: true},
-      {:faker, "~> 0.12.0"},
+      {:gun, "~> 1.3.0"},
+      {:observer_cli, "~> 1.5.2"},
+      {:distillery, "~> 2.1.1"},
+      {:meck, "~> 0.8.13", only: [:test], runtime: false, override: true},
+      {:faker, "~> 0.12.0", only: [:test], runtime: false},
       {:dialyzex, "~> 1.2.1", only: [:dev], runtime: false},
-      {:excoveralls, "~> 0.10.6", only: :test}
+      {:excoveralls, "~> 0.11.1", only: [:test], runtime: false}
     ]
   end
 end
