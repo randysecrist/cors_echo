@@ -22,8 +22,13 @@ defmodule API.Config do
   def get(), do:
     :application.get_all_env(:cors_echo)
 
-  def get_logger_config(), do:
-    Logger.Config.__data__()
+  def get_logger_config() do
+    # elixir 1.9 does this differently
+    case Keyword.has_key?(Logger.Config.__info__(:functions), :translation_data) do
+      true -> Logger.Config.translation_data
+      _ -> Logger.Config.__data__()
+    end    
+  end
 
   # Internal
   defp get_env(key) do
