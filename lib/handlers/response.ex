@@ -31,7 +31,7 @@ defmodule API.Response do
     :cowboy_req.reply(status,
       %{"content-type" => "application/json",
         "access-control-allow-origin" => "*",
-        "x-sofi-crc32" => Integer.to_string(crc32)}, json, req0)
+        "x-echo-crc32" => Integer.to_string(crc32)}, json, req0)
   end
 
   defp make(map) when is_map(map) do

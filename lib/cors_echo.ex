@@ -2,6 +2,7 @@ alias API.Config
 alias API.Monitoring
 
 alias API.{
+  EchoHandler,
   PingHandler,
   RootHandler
 }
@@ -41,6 +42,7 @@ defmodule CORSEcho do
     # build our routing table
     dispatch = :cowboy_router.compile([
       {:_, [
+        {"/v1/echo", EchoHandler, []},
         {"/v1/ping", PingHandler, []},
         {:_, RootHandler, []}
       ]}

@@ -44,7 +44,7 @@ defmodule API.Test.Helper do
     {_, port} = Config.get_bind_address()
     options = case Config.get_protocol do
       :http -> %{:protocols => [:http2]}
-      _ -> %{:protocols => [:http2], :transport => :ssl}
+      _ -> %{:protocols => [:http2], :transport => :tls}
     end
     {:ok, pid} = :gun.open('localhost', port, options)
     stream_ref = :gun.get(pid, url)

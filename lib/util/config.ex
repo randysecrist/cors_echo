@@ -27,8 +27,6 @@ defmodule API.Config do
 
   # Internal
   defp get_env(key) do
-    require Logger
-    Logger.info("#{inspect(key)}")
     {_, value} = :application.get_env(:cors_echo, key)
     value
   end
