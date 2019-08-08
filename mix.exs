@@ -1,55 +1,58 @@
-env = System.get_env("MIX_ENV") || "dev"
-Code.append_path "deps/relex/_build/" <> env <> "/lib/relex/ebin"
-Code.append_path "deps/pogo/_build/" <> env <> "/lib/pogo/ebin"
-
 defmodule CORSEcho.Mixfile do
   use Mix.Project
 
+  @version "0.0.2"
+
   def project do
-    [ app: :cors_echo,
-      version: "0.0.1",
-      build_per_environment: true,
-      dynamos: [CORSEcho.Dynamo],
-      compilers: [:elixir, :dynamo, :app],
-      deps: deps ]
+    [
+      app: :cors_echo,
+      version: @version,
+      elixir: "~> 1.8",
+      start_permaanent: Mix.env == :prod,
+      erlc_paths: ["lib"],
+      deps: deps(),
+      test_coverage: [tool: ExCoveralls],
+      dialyzer_warnings: [
+       :unmatched_returns,
+       :error_handling,
+       :race_conditions,
+       :underspecs,
+       :unknown],
+      dialyzer_ignored_warnings: [
+       {:warn_contract_supertype, :_, :_}
+      ]
+    ]
+  end
+
+  def version do
+    @version
   end
 
   # Configuration for the OTP application
   def application do
-    [ applications: [:cowboy, :dynamo,
-                     :json, :httpoison, :exlager,
-                     :stdlib, :inets ],
+    [
+      applications: [],
+      extra_applications: [
+        :logger, :ranch
+      ],
       mod: { CORSEcho, [] },
-      env: [
-        config_prop_1: true,
-        config_prop_2: false
-      ]
+      included_applications: [],
     ]
   end
 
   defp deps do
     [
-      { :cowboy, github: "extend/cowboy" },
-      { :dynamo, "~> 0.1.0-dev", github: "elixir-lang/dynamo" },
-      { :json, github: "cblage/elixir-json" },
-      { :httpoison, github: "edgurgel/httpoison" },
-      { :exlager, github: "khia/exlager" },
-      { :relex, github: "yrashk/relex" },
-      { :pogo, github: "onkel-dirtus/pogo" }
+      {:cowboy, "~> 2.6.3"},
+      {:ranch, "~> 1.7.1"},
+      {:cowlib, "~> 2.7.3", override: true},
+      {:jason, "~> 1.1.2"},
+      {:gun, "~> 1.3.0"},
+      {:observer_cli, "~> 1.5.2"},
+      {:distillery, "~> 2.1.1"},
+      {:meck, "~> 0.8.13", only: [:test], runtime: false, override: true},
+      {:faker, "~> 0.12.0", only: [:test], runtime: false},
+      {:dialyzex, "~> 1.2.1", only: [:dev], runtime: false},
+      {:excoveralls, "~> 0.11.1", only: [:test], runtime: false}
     ]
-  end
-
-  if Code.ensure_loaded?(Relex.Release) do
-    defmodule Release do
-      use Relex.Release
-      use Pogo.Release
-
-      def name, do: "cors_echo"
-      def version, do: Mix.project[:version]
-      def applications do
-        [:pogo, Mix.project[:app] ]
-      end
-      def lib_dirs, do: ["deps"]
-    end
   end
 end
